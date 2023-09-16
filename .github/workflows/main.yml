@@ -26,7 +26,7 @@ jobs:
         # -   Release
 
     steps:
-    - name: Checkout Latest LLVM
+    - name: Checkout Self
       uses: actions/checkout@v2
   
     # - name: Install CMake
@@ -47,10 +47,8 @@ jobs:
       run: |
         mkdir llvm-source
         mkdir llvm-build
-        git clone https://github.com/llvm/llvm-project.git llvm-source
-        cd llvm-source
-        git checkout release/17.x
-        cd ../llvm-build
+        git clone https://github.com/llvm/llvm-project.git --single-branch --branch release/17.x llvm-source
+        cd llvm-build
         cmake -G "Visual Studio 17.3 2022" -A x64 ../llvm-source/llvm
       working-directory: ${{ github.workspace }}
 
