@@ -28,5 +28,22 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
 
-      - name: Test Msbuild
-        uses: microsoft/setup-msbuild@v1.1
+      # - name: Test Msbuild
+      #   uses: microsoft/setup-msbuild@v1.1
+
+      - name: zip 
+        run: | 
+          echo test > 1.txt
+          zip -r r.zip ./
+        
+      - name: Test Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          body: TODO New Release.
+          draft: false
+          prerelease: false
+          files: |
+            r.zip
