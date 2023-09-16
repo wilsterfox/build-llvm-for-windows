@@ -16,14 +16,14 @@ jobs:
       matrix:
         CRT:
           -  msvcrt
-          -  libcmt
+          # -  libcmt
   
         TARGET_CPU:
-        -  x86
+        # -  x86
         -  amd64
   
         CONFIGURATION:
-        -   Debug
+        # -   Debug
         -   Release
 
     steps:
@@ -34,7 +34,7 @@ jobs:
       #   cd llvm-project
   
     - name: Install CMake
-      uses: actions/setup-cmake@v1
+      uses: lukka/get-cmake@v3.27.4
       with:
         cmake-version: '3.25'  # 指定您需要的CMake版本
 
