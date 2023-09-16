@@ -8,6 +8,7 @@ jobs:
     runs-on: windows-latest  # 使用Windows虚拟环境
     env:
       LLVM_BRANCH: release/17.x
+      RELEASE_ZIP_FILE: 17.x
       MSBUILD_VERSION: '17.3'
       CMAKE_PARALLEL_OPTION: '' # -DLLVM_PARALLEL_{COMPILE,LINK}_JOBS=8
       LLVM_ENABLE_PROJECTS: '' # -DLLVM_ENABLE_PROJECTS='clang'
@@ -72,16 +73,16 @@ jobs:
     - name: Zip Build
       shell: powershell
       run: | 
-        Compress-Archive -LiteralPath .\ -DestinationPath ${{ env.LLVM_BRANCH }}-release.zip
+        Compress-Archive -LiteralPath .\ -DestinationPath ${{ env.RELEASE_ZIP_FILE }}-release.zip
       working-directory: ${{ github.workspace }}/llvm-build
       
     - name: Release Build
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ env.LLVM_BRANCH }}-release
-        name: ${{ env.LLVM_BRANCH }}
+        tag_name: ${{ env.RELEASE_ZIP_FILE }}-release
+        name: ${{ env.RELEASE_ZIP_FILE }}
         body: New Release.
         draft: false
         prerelease: false
         files: |
-          ${{ github.workspace }}/llvm-build/${{ env.LLVM_BRANCH }}-release.zip
+          ${{ github.workspace }}/llvm-build/${{ env.RELEASE_ZIP_FILE }}-release.zip
