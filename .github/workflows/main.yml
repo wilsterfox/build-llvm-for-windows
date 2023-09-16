@@ -49,11 +49,11 @@ jobs:
         mkdir llvm-build
       working-directory: ${{ github.workspace }}
     
-    - name: Fetching LLVM Project
+    - name: Fetch LLVM Project
       run: git clone --depth 1 --single-branch --branch release/17.x https://github.com/llvm/llvm-project.git llvm-source
       working-directory: ${{ github.workspace }}
     
-    - name: Configurating Cmake
+    - name: Configurate Cmake
       run: |
         cd llvm-build
         cmake -G "Visual Studio 17 2022" -A x64 ../llvm-source/llvm
