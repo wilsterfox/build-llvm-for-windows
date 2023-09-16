@@ -64,3 +64,20 @@ jobs:
       run: |
         cmake --build . --config Release
       working-directory: ${{ github.workspace }}/llvm-build
+
+    - name: Zip Build
+      shell: powershell
+      run: | 
+        Compress-Archive -LiteralPath .\ -DestinationPath ${{ env.LLVM_BRANCH }}-release.zip
+      working-directory: ${{ github.workspace }}/llvm-build
+      
+    - name: Release Build
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.LLVM_BRANCH }}-release
+        name: ${{ env.LLVM_BRANCH }}
+        body: New Release.
+        draft: false
+        prerelease: false
+        files: |
+          ${{ github.workspace }}/llvm-build/${{ env.LLVM_BRANCH }}-release.zip
