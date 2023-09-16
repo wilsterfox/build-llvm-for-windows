@@ -1,0 +1,58 @@
+name: Build LLVM for Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest  # 使用Windows虚拟环境
+    env:
+      BUILD_PROJECT: clang
+      BUILD_MASTER: false
+      LLVM_VERSION: 11.1.0
+
+    strategy:
+      fail-fast: false
+      matrix:
+        CRT:
+          -  msvcrt
+          -  libcmt
+  
+        TARGET_CPU:
+        -  x86
+        -  amd64
+  
+        CONFIGURATION:
+        -   Debug
+        -   Release
+
+    steps:
+    - name: Checkout Latest LLVM
+      uses: actions/checkout@v2
+      # run: |
+      #   git clone https://github.com/llvm/llvm-project.git
+      #   cd llvm-project
+  
+    - name: Install CMake
+      uses: actions/setup-cmake@v1
+      with:
+        cmake-version: '3.25'  # 指定您需要的CMake版本
+
+    - name: Install Visual Studio Build Tools
+      uses: microsoft/setup-msbuild@v1
+      with:
+        vs-version: '2019'  # 指定您需要的Visual Studio版本
+
+    - name: Set up LLVM source and build directories
+      run: |
+        mkdir llvm-source
+        mkdir llvm-build
+        git clone https://github.com/llvm/llvm-project.git llvm-source
+        cd llvm-build
+        cmake -G "Visual Studio 16 2019" -A x64 ../llvm-source/llvm
+      working-directory: ${{ github.workspace }}
+
+    - name: Build LLVM
+      run: |
+        cmake --build . --config Release
+      working-directory: ${{ github.workspace }}/llvm-build
