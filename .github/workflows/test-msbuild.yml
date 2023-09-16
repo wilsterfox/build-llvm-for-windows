@@ -32,9 +32,10 @@ jobs:
       #   uses: microsoft/setup-msbuild@v1.1
 
       - name: zip 
+        shell: powershell
         run: | 
-          touch 1.txt
-          zip -r r.zip 1.txt
+          echo 111 > 2.txt
+          Compress-Archive -LiteralPath .\ -DestinationPath r.zip
         
       - name: Test Release
         uses: softprops/action-gh-release@v1
