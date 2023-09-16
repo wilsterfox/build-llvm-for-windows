@@ -28,12 +28,9 @@ jobs:
     steps:
     - name: Checkout Latest LLVM
       uses: actions/checkout@v2
-      # run: |
-      #   git clone https://github.com/llvm/llvm-project.git
-      #   cd llvm-project
   
-    - name: Install CMake
-      uses: lukka/get-cmake@v3.27.4
+    # - name: Install CMake
+    #   uses: lukka/get-cmake@v3.27.4
       with:
         cmake-version: '3.25'  # 指定需要的CMake版本
 
@@ -42,17 +39,19 @@ jobs:
       
     - name: Install Visual Studio Build Tools
       uses: microsoft/setup-msbuild@v1.3.1
-      # with:
-        # vs-version: '2019'  # 指定需要的Visual Studio版本
-        # msbuild-architecture: x64
+      with:
+        vs-version: '17.3'  # 指定需要的Visual Studio版本
+        msbuild-architecture: x64
 
     - name: Set up LLVM source and build directories
       run: |
         mkdir llvm-source
         mkdir llvm-build
         git clone https://github.com/llvm/llvm-project.git llvm-source
-        cd llvm-build
-        cmake -G "Visual Studio 16 2019" -A x64 ../llvm-source/llvm
+        cd llvm-source
+        git checkout release/17.x
+        cd ../llvm-build
+        cmake -G "Visual Studio 17.3 2022" -A x64 ../llvm-source/llvm
       working-directory: ${{ github.workspace }}
 
     - name: Build LLVM
