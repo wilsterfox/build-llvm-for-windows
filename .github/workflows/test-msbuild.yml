@@ -33,7 +33,7 @@ jobs:
 
       - name: zip 
         run: | 
-          echo test > 1.txt
+          touch 1.txt
           zip -r r.zip 1.txt
         
       - name: Test Release
