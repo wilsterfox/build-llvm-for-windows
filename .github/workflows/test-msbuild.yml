@@ -34,7 +34,7 @@ jobs:
       - name: zip 
         run: | 
           echo test > 1.txt
-          zip -r r.zip ./
+          zip -r r.zip 1.txt
         
       - name: Test Release
         uses: softprops/action-gh-release@v1
