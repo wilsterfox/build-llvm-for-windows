@@ -9,22 +9,21 @@ jobs:
     env:
       BUILD_PROJECT: clang
       BUILD_MASTER: false
-      LLVM_VERSION: 11.1.0
 
-    strategy:
-      fail-fast: false
-      matrix:
-        CRT:
-          -  msvcrt
+    # strategy:
+      # fail-fast: false
+      # matrix:
+        # CRT:
+          # -  msvcrt
           # -  libcmt
   
         # TARGET_CPU:
         # -  x86
         # -  amd64
   
-        CONFIGURATION:
+        # CONFIGURATION:
         # -   Debug
-        -   Release
+        # -   Release
 
     steps:
     - name: Checkout Latest LLVM
@@ -38,14 +37,14 @@ jobs:
       with:
         cmake-version: '3.25'  # 指定需要的CMake版本
 
-    - name: Setup MSBuild
-      uses: warrenbuckley/Setup-MSBuild@v1
+    # - name: Setup MSBuild
+      # uses: warrenbuckley/Setup-MSBuild@v1
       
     - name: Install Visual Studio Build Tools
       uses: microsoft/setup-msbuild@v1.3.1
       with:
         vs-version: '2019'  # 指定需要的Visual Studio版本
-        msbuild-architecture: x64
+        # msbuild-architecture: x64
 
     - name: Set up LLVM source and build directories
       run: |
