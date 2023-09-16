@@ -18,9 +18,9 @@ jobs:
           -  msvcrt
           # -  libcmt
   
-        TARGET_CPU:
+        # TARGET_CPU:
         # -  x86
-        -  amd64
+        # -  amd64
   
         CONFIGURATION:
         # -   Debug
@@ -39,6 +39,7 @@ jobs:
         cmake-version: '3.25'  # 指定您需要的CMake版本
 
     - name: Install Visual Studio Build Tools
+      # uses: warrenbuckley/Setup-MSBuild@v1
       uses: microsoft/setup-msbuild@v1.3.1
       with:
         vs-version: '2019'  # 指定您需要的Visual Studio版本
