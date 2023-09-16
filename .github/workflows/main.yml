@@ -41,7 +41,7 @@ jobs:
     - name: Install Visual Studio Build Tools
       uses: microsoft/setup-msbuild@v1.3.1
       with:
-        vs-version: ${{ MSBUILD_VERSION }}  # 指定需要的Visual Studio版本
+        vs-version: ${{ env.MSBUILD_VERSION }}  # 指定需要的Visual Studio版本
         msbuild-architecture: x64
 
     - name: Set up LLVM source and build directories
@@ -51,7 +51,7 @@ jobs:
       working-directory: ${{ github.workspace }}
     
     - name: Fetch LLVM Project
-      run: git clone --depth 1 --single-branch --branch ${{ LLVM_BRANCH }} https://github.com/llvm/llvm-project.git llvm-source
+      run: git clone --depth 1 --single-branch --branch ${{ env.LLVM_BRANCH }} https://github.com/llvm/llvm-project.git llvm-source
       working-directory: ${{ github.workspace }}
     
     - name: Configurate Cmake
