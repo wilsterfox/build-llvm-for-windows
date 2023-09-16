@@ -7,9 +7,13 @@ jobs:
   build:
     runs-on: windows-latest  # 使用Windows虚拟环境
     env:
-      BUILD_PROJECT: clang
       LLVM_BRANCH: release/17.x
       MSBUILD_VERSION: '17.3'
+      CMAKE_PARALLEL_OPTION: '' # -DLLVM_PARALLEL_{COMPILE,LINK}_JOBS=8
+      LLVM_ENABLE_PROJECTS: '' # -DLLVM_ENABLE_PROJECTS='clang'
+      CMAKE_BUILD_TARGET_OPTION: '' # --target AMDGPU
+      CMAKE_BUILD_TYPE: Release 
+      
 
     # strategy:
       # fail-fast: false
@@ -57,12 +61,12 @@ jobs:
     - name: Configurate Cmake
       run: |
         cd llvm-build
-        cmake -G "Visual Studio 17 2022" -A x64 ../llvm-source/llvm
+        cmake -G "Visual Studio 17 2022" -A x64 ${{ env.CMAKE_PARALLEL_OPTION }} ${{ env.LLVM_ENABLE_PROJECTS }} ../llvm-source/llvm 
       working-directory: ${{ github.workspace }}
 
     - name: Build LLVM
       run: |
-        cmake --build . --config Release
+        cmake --build . --config ${{ env.CMAKE_BUILD_TYPE }} ${{ env.CMAKE_BUILD_TARGET_OPTION }}
       working-directory: ${{ github.workspace }}/llvm-build
 
     - name: Zip Build
