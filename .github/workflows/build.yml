@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build_llvm_for_windows:
     runs-on: windows-latest  # 使用Windows虚拟环境
     env:
       LLVM_BRANCH: release/17.x
