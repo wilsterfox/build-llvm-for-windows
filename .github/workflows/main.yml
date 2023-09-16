@@ -36,13 +36,15 @@ jobs:
     - name: Install CMake
       uses: lukka/get-cmake@v3.27.4
       with:
-        cmake-version: '3.25'  # 指定您需要的CMake版本
+        cmake-version: '3.25'  # 指定需要的CMake版本
 
+    - name: Setup MSBuild
+      uses: warrenbuckley/Setup-MSBuild@v1
+      
     - name: Install Visual Studio Build Tools
-      # uses: warrenbuckley/Setup-MSBuild@v1
       uses: microsoft/setup-msbuild@v1.3.1
       with:
-        vs-version: '2019'  # 指定您需要的Visual Studio版本
+        vs-version: '2019'  # 指定需要的Visual Studio版本
         msbuild-architecture: x64
 
     - name: Set up LLVM source and build directories
