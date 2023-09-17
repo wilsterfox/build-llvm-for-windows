@@ -69,6 +69,16 @@ jobs:
       run: |
         cmake --build . --config ${{ env.CMAKE_BUILD_TYPE }} ${{ env.CMAKE_BUILD_TARGET_OPTION }}
       working-directory: ${{ github.workspace }}/llvm-build
+    
+    - name:  Echi
+      run: |
+        du -sh
+        ls
+        echo 111111111111111111111111111111111111
+        ls bin
+        ls ..
+        ls ../..
+      working-directory: ${{ github.workspace }}/llvm-build
 
     - name: Zip Build
       shell: powershell
