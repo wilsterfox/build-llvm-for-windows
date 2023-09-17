@@ -71,8 +71,8 @@ jobs:
       working-directory: ${{ github.workspace }}/llvm-build
     
     - name:  Echi
+      shell: powershell
       run: |
-        du -sh
         ls
         echo 111111111111111111111111111111111111
         ls bin
@@ -84,6 +84,7 @@ jobs:
       shell: powershell
       run: | 
         Compress-Archive -LiteralPath .\ -DestinationPath ${{ env.RELEASE_ZIP_FILE }}-release.zip
+        ls 
       working-directory: ${{ github.workspace }}/llvm-build
       
     - name: Release Build
