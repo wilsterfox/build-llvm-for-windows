@@ -93,14 +93,14 @@ jobs:
         cmake --install . --prefix ../${{ env.CMAKE_INSTALL_FOLDER_NAME }}
         cd ../${{ env.CMAKE_INSTALL_FOLDER_NAME }}
         ls
-        ompress-Archive -LiteralPath .\ -DestinationPath install.zip
+        Compress-Archive -LiteralPath .\ -DestinationPath install.zip
         ls
       working-directory: ${{ github.workspace }}/llvm-build
 
     - name: Zip Build
       shell: powershell
       run: | 
-        Compress-Archive -LiteralPath .\ -DestinationPath ${{ env.RELEASE_ZIP_FILE }}-release.zip
+        # Compress-Archive -LiteralPath .\ -DestinationPath ${{ env.RELEASE_ZIP_FILE }}-release.zip
         ls 
       working-directory: ${{ github.workspace }}/llvm-build
       
@@ -113,5 +113,5 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          llvm-build/${{ env.RELEASE_ZIP_FILE }}-release.zip
+          # llvm-build/${{ env.RELEASE_ZIP_FILE }}-release.zip
           ${{ env.CMAKE_INSTALL_FOLDER_NAME }}/install.zip
