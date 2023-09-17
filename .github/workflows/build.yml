@@ -5,17 +5,23 @@ on:
 
 jobs:
   build_llvm_for_windows:
-    runs-on: windows-latest  # 使用Windows虚拟环境
+    runs-on: windows-latest
     env:
       LLVM_BRANCH: release/17.x
       RELEASE_ZIP_FILE: 17.x
       MSBUILD_VERSION: '17.3'
+      CMAKE_INSTALL_FOLDER_NAME: llvm-install
+      CMAKE_BUILD_SYSTEM: Visual Studio 17 2022
+      LLVM_OPTIMIZED_TABLEGE_OPTION: '' # -DLLVM_OPTIMIZED_TABLEGEN=ON 
       CMAKE_PARALLEL_OPTION: '' # -DLLVM_PARALLEL_{COMPILE,LINK}_JOBS=8
       LLVM_ENABLE_PROJECTS: '' # -DLLVM_ENABLE_PROJECTS='clang'
-      CMAKE_BUILD_TARGET_OPTION: '' # --target AMDGPU
-      CMAKE_BUILD_TYPE: Release 
+      CMAKE_BUILD_TARGET_OPTION: '' # --target X86 
+      LLVM_TARGETS_TO_BUILD_OPTION: '' # -DLLVM_TARGETS_TO_BUILD="X86"
+      CMAKE_BUILD_TYPE: Release
+      CMAKE_BUILD_TYPE_OPTION: -DCMAKE_BUILD_TYPE=RELEASE
       
-
+      
+    # turn on matrix if needed
     # strategy:
       # fail-fast: false
       # matrix:
@@ -35,24 +41,22 @@ jobs:
     - name: Checkout Self
       uses: actions/checkout@v2
   
-    # - name: Install CMake
-    #   uses: lukka/get-cmake@v3.27.4
+    - name: Install CMake
+      uses: lukka/get-cmake@v3.27.4
       with:
-        cmake-version: '3.25'  # 指定需要的CMake版本
-
-    # - name: Setup MSBuild
-      # uses: warrenbuckley/Setup-MSBuild@v1
+        cmake-version: '3.25'  
       
     - name: Install Visual Studio Build Tools
       uses: microsoft/setup-msbuild@v1.3.1
       with:
-        vs-version: ${{ env.MSBUILD_VERSION }}  # 指定需要的Visual Studio版本
+        vs-version: ${{ env.MSBUILD_VERSION }} 
         msbuild-architecture: x64
 
     - name: Set up LLVM source and build directories
       run: |
         mkdir llvm-source
         mkdir llvm-build
+        mkdir ${{ env.CMAKE_INSTALL_FOLDER_NAME }}
       working-directory: ${{ github.workspace }}
     
     - name: Fetch LLVM Project
@@ -62,7 +66,7 @@ jobs:
     - name: Configurate Cmake
       run: |
         cd llvm-build
-        cmake -G "Visual Studio 17 2022" -A x64 ${{ env.CMAKE_PARALLEL_OPTION }} ${{ env.LLVM_ENABLE_PROJECTS }} ../llvm-source/llvm 
+        cmake -G "${{ env.CMAKE_BUILD_SYSTEM }}" -A x64 ${{ env.LLVM_OPTIMIZED_TABLEGE_OPTION }} ${{ env.LLVM_TARGETS_TO_BUILD_OPTION }} ${{ env.CMAKE_BUILD_TYPE_OPTION }} ${{ env.CMAKE_PARALLEL_OPTION }} ${{ env.LLVM_ENABLE_PROJECTS }} ../llvm-source/llvm 
       working-directory: ${{ github.workspace }}
 
     - name: Build LLVM
@@ -70,19 +74,25 @@ jobs:
         cmake --build . --config ${{ env.CMAKE_BUILD_TYPE }} ${{ env.CMAKE_BUILD_TARGET_OPTION }}
       working-directory: ${{ github.workspace }}/llvm-build
 
-    - name: Zip Build
+    - name: Install Builds
+      shell: powershell
+      run: |
+        cmake --install . --prefix ../${{ env.CMAKE_INSTALL_FOLDER_NAME }}
+      working-directory: ${{ github.workspace }}/llvm-build
+
+    - name: Package Builds
       shell: powershell
       run: | 
-        Compress-Archive -LiteralPath .\ -DestinationPath ${{ env.RELEASE_ZIP_FILE }}-release.zip
-      working-directory: ${{ github.workspace }}/llvm-build
+        Compress-Archive -LiteralPath .\ -DestinationPath ${{ env.RELEASE_ZIP_FILE }}-release.zip 
+      working-directory: ${{ github.workspace }}/${{ env.CMAKE_INSTALL_FOLDER_NAME }}
       
     - name: Release Build
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ env.RELEASE_ZIP_FILE }}-release
         name: ${{ env.RELEASE_ZIP_FILE }}
-        body: New Release.
+        body: ${{ env.RELEASE_ZIP_FILE }} release. 
         draft: false
         prerelease: false
         files: |
-          ${{ github.workspace }}/llvm-build/${{ env.RELEASE_ZIP_FILE }}-release.zip
+          ${{ env.CMAKE_INSTALL_FOLDER_NAME }}/${{ env.RELEASE_ZIP_FILE }}-release.zip
