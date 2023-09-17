@@ -10,10 +10,15 @@ jobs:
       LLVM_BRANCH: release/17.x
       RELEASE_ZIP_FILE: 17.x
       MSBUILD_VERSION: '17.3'
+      CMAKE_BUILD_SYSTEM: Visual Studio 17 2022
+      LLVM_OPTIMIZED_TABLEGE_OPTION: -DLLVM_OPTIMIZED_TABLEGEN=ON # 对TABLEGEN开启优化 对于调试模式 这有利于提高编译速度
       CMAKE_PARALLEL_OPTION: '' # -DLLVM_PARALLEL_{COMPILE,LINK}_JOBS=8
-      LLVM_ENABLE_PROJECTS: '' # -DLLVM_ENABLE_PROJECTS='clang'
-      CMAKE_BUILD_TARGET_OPTION: --target X86
+      LLVM_ENABLE_PROJECTS: '' # -DLLVM_ENABLE_PROJECTS='clang' # 还需要编译其他工具
+      CMAKE_BUILD_TARGET_OPTION: --target X86 
+      LLVM_TARGETS_TO_BUILD_OPTION: -DLLVM_TARGETS_TO_BUILD="X86"
       CMAKE_BUILD_TYPE: Release 
+      CMAKE_BUILD_TYPE_OPTION: -DCMAKE_BUILD_TYPE=RELEASE
+      
       
 
     # strategy:
@@ -62,7 +67,7 @@ jobs:
     - name: Configurate Cmake
       run: |
         cd llvm-build
-        cmake -G "Visual Studio 17 2022" -A x64 ${{ env.CMAKE_PARALLEL_OPTION }} ${{ env.LLVM_ENABLE_PROJECTS }} ../llvm-source/llvm 
+        cmake -G "${{ env.CMAKE_BUILD_SYSTEM }}" -A x64 ${{ env.LLVM_OPTIMIZED_TABLEGE_OPTION }} ${{ env.LLVM_TARGETS_TO_BUILD_OPTION }} ${{ env.CMAKE_BUILD_TYPE_OPTION }} ${{ env.CMAKE_PARALLEL_OPTION }} ${{ env.LLVM_ENABLE_PROJECTS }} ../llvm-source/llvm 
       working-directory: ${{ github.workspace }}
 
     - name: Build LLVM
