@@ -75,7 +75,7 @@ jobs:
       run: |
         ls
         echo 111111111111111111111111111111111111
-        ls bin
+        ls Release                                                              
         ls ..
         ls ../..
       working-directory: ${{ github.workspace }}/llvm-build
