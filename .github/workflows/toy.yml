@@ -37,8 +37,8 @@ jobs:
       - name: zip 
         shell: powershell
         run: | 
-          echo 111 > 2.txt
-          Compress-Archive -LiteralPath .\ -DestinationPath r.zip
+          echo test > test.txt
+          Compress-Archive -LiteralPath .\ -DestinationPath test.zip
         
       - name: Test Release
         uses: softprops/action-gh-release@v1
@@ -46,10 +46,10 @@ jobs:
         # env: 
         #   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          tag_name: rel-t # ${{ github.ref }}
+          tag_name: test-release # ${{ github.ref }}
           name: Release ${{ env.BUILD_PROJECT }}
           body: TODO New Release.
           draft: false
           prerelease: false
           files: |
-            r.zip
+            test.zip
