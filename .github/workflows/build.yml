@@ -8,13 +8,14 @@ jobs:
     runs-on: windows-latest
     env:
       LLVM_BRANCH: release/17.x
-      RELEASE_ZIP_FILE: 17.x
+      RELEASE_TAG: 17.x-with-clang-lld-lldb-release
+      RELEASE_ZIP_FILE: 17.x-with-clang-lld-lldb
       MSBUILD_VERSION: '17.3'
       CMAKE_INSTALL_FOLDER_NAME: llvm-install
       CMAKE_BUILD_SYSTEM: Visual Studio 17 2022
       LLVM_OPTIMIZED_TABLEGE_OPTION: '' # -DLLVM_OPTIMIZED_TABLEGEN=ON 
       CMAKE_PARALLEL_OPTION: '' # -DLLVM_PARALLEL_{COMPILE,LINK}_JOBS=8
-      LLVM_ENABLE_PROJECTS: '' # -DLLVM_ENABLE_PROJECTS='clang'
+      LLVM_ENABLE_PROJECTS: -DLLVM_ENABLE_PROJECTS='clang;lld;lldb' # mlir
       CMAKE_BUILD_TARGET_OPTION: '' # --target X86 
       LLVM_TARGETS_TO_BUILD_OPTION: '' # -DLLVM_TARGETS_TO_BUILD="X86"
       CMAKE_BUILD_TYPE: Release
@@ -89,9 +90,9 @@ jobs:
     - name: Release Build
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ env.RELEASE_ZIP_FILE }}-release
-        name: ${{ env.RELEASE_ZIP_FILE }}
-        body: ${{ env.RELEASE_ZIP_FILE }} release. 
+        tag_name: ${{ env.RELEASE_TAG }}
+        name: ${{ env.RELEASE_TAG }}
+        body: ${{ env.RELEASE_TAG }} release. 
         draft: false
         prerelease: false
         files: |
