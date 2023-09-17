@@ -10,6 +10,7 @@ jobs:
       LLVM_BRANCH: release/17.x
       RELEASE_ZIP_FILE: 17.x
       MSBUILD_VERSION: '17.3'
+      CMAKE_INSTALL_FOLDER_NAME: llvm-install
       CMAKE_BUILD_SYSTEM: Visual Studio 17 2022
       LLVM_OPTIMIZED_TABLEGE_OPTION: -DLLVM_OPTIMIZED_TABLEGEN=ON # 对TABLEGEN开启优化 对于调试模式 这有利于提高编译速度
       CMAKE_PARALLEL_OPTION: '' # -DLLVM_PARALLEL_{COMPILE,LINK}_JOBS=8
@@ -58,6 +59,7 @@ jobs:
       run: |
         mkdir llvm-source
         mkdir llvm-build
+        mkdir ${{ env.CMAKE_INSTALL_FOLDER_NAME }}
       working-directory: ${{ github.workspace }}
     
     - name: Fetch LLVM Project
@@ -85,6 +87,16 @@ jobs:
         ls ../..
       working-directory: ${{ github.workspace }}/llvm-build
 
+    - name: Install Build
+      shell: powershell
+      run: |
+        cmake --install . --prefix ../${{ env.CMAKE_INSTALL_FOLDER_NAME }}
+        cd ../${{ env.CMAKE_INSTALL_FOLDER_NAME }}
+        ls
+        ompress-Archive -LiteralPath .\ -DestinationPath install.zip
+        ls
+      working-directory: ${{ github.workspace }}/llvm-build
+
     - name: Zip Build
       shell: powershell
       run: | 
@@ -102,3 +114,4 @@ jobs:
         prerelease: false
         files: |
           llvm-build/${{ env.RELEASE_ZIP_FILE }}-release.zip
+          ${{ env.CMAKE_INSTALL_FOLDER_NAME }}/install.zip
